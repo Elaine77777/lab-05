@@ -1,0 +1,119 @@
+---
+title: "Acquisition"
+author: "Elaine Lu"
+format: 
+  html: 
+    number-sections: true
+    number-depth: 2
+---
+
+# Description of Data 
+
+```{r}
+#| label: set-up/load-packages 
+#| message: false
+library(dplyr) # data manipulation
+library(readr) # data import/ export
+library(gutenbergr) # Project Gutenberg API
+library(fs)
+```
+
+```{r}
+glimpse(gutenberg_metadata)
+glimpse(gutenberg_authors)
+glimpse(gutenberg_subjects)
+```
+
+## The nature/source/acquisition of data: 
+
+[Gutenberg](https://www.gutenberg.org/) is an open-access online database that include literature from all over the world, which the patents of them is expired and free for users to download it. In the database we download, we use API for accessing Gutenberg database and use R to process that. 
+We can manually download books we want to our local data file, using gutenberg_ids the website provides, subset the data we need to write it into a new csv file, and begin to analyze that. 
+
+## The format of data: 
+
+Gutenberg offers multiple forms of text files, but I think we mainly use txt forms for this project, and a Project Gutenberg text file often includes: Title of the book, Author(s) of the book, Language of the text, Publication date, Gutenberg license information, and Any additional metadata specific to the book. 
+
+## The license of data: 
+
+Since Gutenberg is an open-access databsed, the majority of texts are released under the Project Gutenberg License, which typically allows for unrestricted use, redistribution, and modification, with some restrictions like prohibiting commercial use without permission. 
+
+# Data Collection
+
+I already previewed the data in the previous step, so in this part, I will select data I want, write all the text fit my requirenments in the database to a csv file, and eventually write a customize function to save both mine and my reproducer's time in the future. 
+
+First, assume that I'm interested in making a comparative analysis about **Charles Dickens**, **William Shakespeare**, and **Jane Austin**, so I will first filter all their works from the database: 
+
+```{r}
+my_authors <-c("Dickens, Charles", "Austen, Jane", "Shakespeare, William")
+
+author_info_tbl<-
+  gutenberg_authors |>
+  # Filter all the authors I want, which are listed in my_authors
+  filter(author %in% my_authors)
+
+# Print the table
+author_info_tbl
+```
+
+Then, I select the works from the Library of Congress Classification (since they are both English novelist, I just need to filter PR, not PS), and I want to count make sure all the files I downloaded include text in English: 
+
+```{r}
+subjects <-
+  gutenberg_subjects |>
+  filter(
+    subject_type == "lcc",
+    subject %in% c("PR")
+  )
+```
+ 
+```{r}
+ works_info_tbl <-
+  gutenberg_metadata |>
+    filter(gutenberg_author_id %in% author_info_tbl$gutenberg_author_id) |> 
+  # Filter all the texts in English
+  filter(language == "en") |> 
+  # Make sure all the files have text in it
+  filter(has_text) |>
+  filter(rights == "Public domain in the USA.") |>
+    arrange(author) # arrange by authors 
+
+# Print the table
+works_info_tbl
+```
+
+Last but not least, I want to run a quick test to make sure everything works in the way that I want, before writing them into a csv file and store them in my data file:  
+
+```{r}
+#|lable: download files 
+works_ca_sample<- 
+  gutenberg_download(gutenberg_id = works_info_tbl$gutenberg_id[1:5],
+    meta_field = c("title", "author", "gutenberg_id"))
+
+works_ca_sample
+```
+
+Now that all the test is done, and all data and code seem fine, I can write my data collection into a csv file: 
+
+**Code Block for csv**
+
+I can also customize the whole thing and write an if statement to check whether or not I downloaded everything, to make it easier for me to use for the next time: 
+
+**Code Block for Customize Function**
+
+# Self-assessment
+
+## What did you learn?
+
+I learned how to use APIs to download data I want from online database, how to "combine" using code, if statement, how I can write customize functions, and how to write my data into a csv file.   
+
+## What did you find most/ least challenging?
+
+The part I found most challenging was to debug, oftentimes I don't know and couldn't tell what is wrong with my code, but now I know I can use chatgpt to debug for me, which makes my life much easier. 
+
+## What resources did you consult?
+
+Instructor, [Chatgpt](https://chat.openai.com/), and [Gutenberg's mirror website](https://www.gutenberg.org/MIRRORS). 
+
+## What more would you like to know about acquiring data?
+
+E.g. how to download the most frequently downlowded books from gutenberg. 

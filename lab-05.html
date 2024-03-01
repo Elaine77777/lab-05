@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Elaine Lu">
+
+<title>Acquisition</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="lab-05_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lab-05_files/libs/quarto-html/quarto.js"></script>
+<script src="lab-05_files/libs/quarto-html/popper.min.js"></script>
+<script src="lab-05_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lab-05_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lab-05_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lab-05_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lab-05_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lab-05_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lab-05_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Acquisition</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elaine Lu </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="description-of-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Description of Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co"># data manipulation</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr) <span class="co"># data import/ export</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gutenbergr) <span class="co"># Project Gutenberg API</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(gutenberg_metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 72,569
+Columns: 8
+$ gutenberg_id        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,…
+$ title               &lt;chr&gt; "The Declaration of Independence of the United Sta…
+$ author              &lt;chr&gt; "Jefferson, Thomas", "United States", "Kennedy, Jo…
+$ gutenberg_author_id &lt;int&gt; 1638, 1, 1666, 3, 1, 4, NA, 3, 3, NA, 7, 7, 7, 8, …
+$ language            &lt;chr&gt; "en", "en", "en", "en", "en", "en", "en", "en", "e…
+$ gutenberg_bookshelf &lt;chr&gt; "Politics/American Revolutionary War/United States…
+$ rights              &lt;chr&gt; "Public domain in the USA.", "Public domain in the…
+$ has_text            &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TR…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(gutenberg_authors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 23,980
+Columns: 7
+$ gutenberg_author_id &lt;int&gt; 1, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1…
+$ author              &lt;chr&gt; "United States", "Lincoln, Abraham", "Henry, Patri…
+$ alias               &lt;chr&gt; "U.S.A.", NA, NA, NA, "Dodgson, Charles Lutwidge",…
+$ birthdate           &lt;int&gt; NA, 1809, 1736, 1849, 1832, NA, 1819, 1860, NA, 18…
+$ deathdate           &lt;int&gt; NA, 1865, 1799, 1931, 1898, NA, 1891, 1937, NA, 18…
+$ wikipedia           &lt;chr&gt; "https://en.wikipedia.org/wiki/United_States", "ht…
+$ aliases             &lt;chr&gt; "U.S.A.", "United States President (1861-1865)/Lin…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(gutenberg_subjects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 231,741
+Columns: 3
+$ gutenberg_id &lt;int&gt; 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, …
+$ subject_type &lt;chr&gt; "lcsh", "lcsh", "lcc", "lcc", "lcsh", "lcsh", "lcc", "lcc…
+$ subject      &lt;chr&gt; "United States -- History -- Revolution, 1775-1783 -- Sou…</code></pre>
+</div>
+</div>
+<section id="the-naturesourceacquisition-of-data" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="the-naturesourceacquisition-of-data"><span class="header-section-number">1.1</span> The nature/source/acquisition of data:</h2>
+<p><a href="https://www.gutenberg.org/">Gutenberg</a> is an open-access online database that include literature from all over the world, which the patents of them is expired and free for users to download it. In the database we download, we use API for accessing Gutenberg database and use R to process that. We can manually download books we want to our local data file, using gutenberg_ids the website provides, subset the data we need to write it into a new csv file, and begin to analyze that.</p>
+</section>
+<section id="the-format-of-data" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="the-format-of-data"><span class="header-section-number">1.2</span> The format of data:</h2>
+<p>Gutenberg offers multiple forms of text files, but I think we mainly use txt forms for this project, and a Project Gutenberg text file often includes: Title of the book, Author(s) of the book, Language of the text, Publication date, Gutenberg license information, and Any additional metadata specific to the book.</p>
+</section>
+<section id="the-license-of-data" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="the-license-of-data"><span class="header-section-number">1.3</span> The license of data:</h2>
+<p>Since Gutenberg is an open-access databsed, the majority of texts are released under the Project Gutenberg License, which typically allows for unrestricted use, redistribution, and modification, with some restrictions like prohibiting commercial use without permission.</p>
+</section>
+</section>
+<section id="data-collection" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data Collection</h1>
+<p>I already previewed the data in the previous step, so in this part, I will select data I want, write all the text fit my requirenments in the database to a csv file, and eventually write a customize function to save both mine and my reproducer’s time in the future.</p>
+<p>First, assume that I’m interested in making a comparative analysis about <strong>Charles Dickens</strong>, <strong>William Shakespeare</strong>, and <strong>Jane Austin</strong>, so I will first filter all their works from the database:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>my_authors <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"Dickens, Charles"</span>, <span class="st">"Austen, Jane"</span>, <span class="st">"Shakespeare, William"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>author_info_tbl<span class="ot">&lt;-</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  gutenberg_authors <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter all the authors I want, which are listed in my_authors</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(author <span class="sc">%in%</span> my_authors)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the table</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>author_info_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 7
+  gutenberg_author_id author         alias birthdate deathdate wikipedia aliases
+                &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  
+1                  37 Dickens, Char… &lt;NA&gt;       1812      1870 https://… Boz/Di…
+2                  65 Shakespeare, … &lt;NA&gt;       1564      1616 https://… Shaksp…
+3                  68 Austen, Jane   &lt;NA&gt;       1775      1817 https://… &lt;NA&gt;   </code></pre>
+</div>
+</div>
+<p>Then, I select the works from the Library of Congress Classification (since they are both English novelist, I just need to filter PR, not PS), and I want to count make sure all the files I downloaded include text in English:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>subjects <span class="ot">&lt;-</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  gutenberg_subjects <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    subject_type <span class="sc">==</span> <span class="st">"lcc"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    subject <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"PR"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a> works_info_tbl <span class="ot">&lt;-</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  gutenberg_metadata <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(gutenberg_author_id <span class="sc">%in%</span> author_info_tbl<span class="sc">$</span>gutenberg_author_id) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter all the texts in English</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(language <span class="sc">==</span> <span class="st">"en"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Make sure all the files have text in it</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(has_text) <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rights <span class="sc">==</span> <span class="st">"Public domain in the USA."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(author) <span class="co"># arrange by authors </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the table</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>works_info_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 169 × 8
+   gutenberg_id title    author gutenberg_author_id language gutenberg_bookshelf
+          &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;                &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;              
+ 1          105 "Persua… Auste…                  68 en       ""                 
+ 2          121 "Northa… Auste…                  68 en       "Gothic Fiction"   
+ 3          141 "Mansfi… Auste…                  68 en       ""                 
+ 4          158 "Emma"   Auste…                  68 en       ""                 
+ 5          946 "Lady S… Auste…                  68 en       ""                 
+ 6         1212 "Love a… Auste…                  68 en       ""                 
+ 7         1342 "Pride … Auste…                  68 en       "Best Books Ever L…
+ 8        19839 "Emma"   Auste…                  68 en       ""                 
+ 9        21839 "Sense … Auste…                  68 en       ""                 
+10        31100 "The Co… Auste…                  68 en       ""                 
+# ℹ 159 more rows
+# ℹ 2 more variables: rights &lt;chr&gt;, has_text &lt;lgl&gt;</code></pre>
+</div>
+</div>
+<p>Last but not least, I want to run a quick test to make sure everything works in the way that I want, before writing them into a csv file and store them in my data file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|lable: download files </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>works_ca_sample<span class="ot">&lt;-</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gutenberg_download</span>(<span class="at">gutenberg_id =</span> works_info_tbl<span class="sc">$</span>gutenberg_id[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>],</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">meta_field =</span> <span class="fu">c</span>(<span class="st">"title"</span>, <span class="st">"author"</span>, <span class="st">"gutenberg_id"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Determining mirror for Project Gutenberg from https://www.gutenberg.org/robot/harvest</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Using mirror http://aleph.gutenberg.org</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>works_ca_sample</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 51,050 × 4
+   gutenberg_id text             title      author      
+          &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;      &lt;chr&gt;       
+ 1          105 "Persuasion"     Persuasion Austen, Jane
+ 2          105 ""               Persuasion Austen, Jane
+ 3          105 ""               Persuasion Austen, Jane
+ 4          105 "by Jane Austen" Persuasion Austen, Jane
+ 5          105 ""               Persuasion Austen, Jane
+ 6          105 "(1818)"         Persuasion Austen, Jane
+ 7          105 ""               Persuasion Austen, Jane
+ 8          105 ""               Persuasion Austen, Jane
+ 9          105 ""               Persuasion Austen, Jane
+10          105 ""               Persuasion Austen, Jane
+# ℹ 51,040 more rows</code></pre>
+</div>
+</div>
+<p>Now that all the test is done, and all data and code seem fine, I can write my data collection into a csv file:</p>
+<p><strong>Code Block for csv</strong></p>
+<p>I can also customize the whole thing and write an if statement to check whether or not I downloaded everything, to make it easier for me to use for the next time:</p>
+<p><strong>Code Block for Customize Function</strong></p>
+</section>
+<section id="self-assessment" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Self-assessment</h1>
+<section id="what-did-you-learn" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="what-did-you-learn"><span class="header-section-number">3.1</span> What did you learn?</h2>
+<p>I learned how to use APIs to download data I want from online database, how to “combine” using code, if statement, how I can write customize functions, and how to write my data into a csv file.</p>
+</section>
+<section id="what-did-you-find-most-least-challenging" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="what-did-you-find-most-least-challenging"><span class="header-section-number">3.2</span> What did you find most/ least challenging?</h2>
+<p>The part I found most challenging was to debug, oftentimes I don’t know and couldn’t tell what is wrong with my code, but now I know I can use chatgpt to debug for me, which makes my life much easier.</p>
+</section>
+<section id="what-resources-did-you-consult" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="what-resources-did-you-consult"><span class="header-section-number">3.3</span> What resources did you consult?</h2>
+<p>Instructor, <a href="https://chat.openai.com/">Chatgpt</a>, and <a href="https://www.gutenberg.org/MIRRORS">Gutenberg’s mirror website</a>.</p>
+</section>
+<section id="what-more-would-you-like-to-know-about-acquiring-data" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="what-more-would-you-like-to-know-about-acquiring-data"><span class="header-section-number">3.4</span> What more would you like to know about acquiring data?</h2>
+<p>E.g. how to download the most frequently downlowded books from gutenberg.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
