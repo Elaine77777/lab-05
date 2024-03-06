@@ -6,3 +6,5 @@
 *.Rproj
 _*
 cite-packages.R
+process/1_acquire_files/*
+process/1_acquire.html
